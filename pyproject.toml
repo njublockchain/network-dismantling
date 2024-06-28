@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "network-dismantling"
+version = "0.0.1"
+description = "Network Dismanling is a Network Dismantling Task Aimedextension library"
+authors = ["Command <me@c0mm4nd.com>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+networkx = "^3.3"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

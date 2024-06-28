@@ -1,0 +1,17 @@
+# IDE
+.idea/
+.vscode/
+
+# Python
+__pycache__/
+*.py[cod]
+
+# Packages
+*.egg
+*.egg-info
+
+# Dist
+dist/
+build/
+*.egg-info
+
