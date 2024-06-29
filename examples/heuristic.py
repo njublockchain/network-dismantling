@@ -1,10 +1,7 @@
 import networkx as nx
-from network_dismantling.dismanlter.optimization import (
+from network_dismantling.dismanlter.influence import (
     CollectiveInfluenceDismantling,
-    CoreHDDismantling,
     ExplosiveImmunizationDismantling,
-    GNDDismantling,
-    CoreGDMDismantling,
 )
 from network_dismantling.evaluator import (
     DismantlingEvaluator,
