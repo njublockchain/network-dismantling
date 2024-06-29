@@ -5,7 +5,7 @@ from typing import List, Tuple
 from scipy.sparse import csr_matrix
 from scipy.sparse.csgraph import connected_components
 from network_dismantling.dismanlter.dismantler import DismantlingStrategy
-
+from tqdm import tqdm
 
 class GNDDismantling(DismantlingStrategy):
     def __init__(self, c=1, epsilon=0.01, max_iterations=100):
@@ -22,7 +22,7 @@ class GNDDismantling(DismantlingStrategy):
         x = np.random.rand(N)
         x = x / np.linalg.norm(x)
 
-        for _ in range(self.max_iterations):
+        for _ in tqdm(range(self.max_iterations), desc="GND Dismantling"):
             x_old = x
             x = L.dot(x) + self.c * x
             x = x / np.linalg.norm(x)

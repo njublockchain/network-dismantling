@@ -5,7 +5,7 @@ from typing import List, Tuple
 from scipy.sparse import csr_matrix
 from scipy.sparse.csgraph import connected_components
 from network_dismantling.dismanlter.dismantler import DismantlingStrategy
-
+from tqdm import tqdm
 
 class CoreHDDismantling(DismantlingStrategy):
     def dismantle(self, G: nx.Graph, num_nodes: int) -> List[int]:
@@ -13,7 +13,7 @@ class CoreHDDismantling(DismantlingStrategy):
         degrees = dict(G.degree())
 
         nodes_to_remove = []
-        for _ in range(num_nodes):
+        for _ in tqdm(range(num_nodes), desc="CoreHD Dismantling"):
             max_core = max(core_numbers.values())
             candidates = [
                 node for node, core in core_numbers.items() if core == max_core

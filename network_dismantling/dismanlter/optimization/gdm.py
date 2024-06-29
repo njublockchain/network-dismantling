@@ -8,6 +8,7 @@ from torch_geometric.utils import from_networkx
 import numpy as np
 from abc import ABC, abstractmethod
 from typing import List, Tuple
+from tqdm import tqdm
 
 from network_dismantling.dismanlter.dismantler import DismantlingStrategy
 
@@ -29,7 +30,7 @@ class GATDismantlingLayer(nn.Module):
         return torch.sigmoid(x).view(-1)
 
 
-class MLDismantling(DismantlingStrategy):
+class GDMDismantling(DismantlingStrategy):
     def __init__(self, hidden_dim=64, num_layers=3, heads=8):
         super().__init__()
         self.hidden_dim = hidden_dim
@@ -44,7 +45,7 @@ class MLDismantling(DismantlingStrategy):
 
         # Prepare training data
         train_data = []
-        for G in train_networks:
+        for G in tqdm(train_networks, desc="Preparing GDM training data"):
             data = Data(
                 x=self.extract_features(G), edge_index=from_networkx(G).edge_index
             )
@@ -54,24 +55,41 @@ class MLDismantling(DismantlingStrategy):
                 ]
             )
             data.y = torch.tensor([1.0 if n in optimal_set else 0.0 for n in G.nodes()])
+            if torch.cuda.is_available():
+                data = data.to("cuda")
             train_data.append(data)
 
         # Initialize and train the model
-        self.model = self.GATDismantling(
+        self.model = GATDismantlingLayer(
             input_dim=4,
             hidden_dim=self.hidden_dim,
             num_layers=self.num_layers,
             heads=self.heads,
         )
+        if torch.cuda.is_available():
+            self.model = self.model.to("cuda")
+
         optimizer = torch.optim.Adam(self.model.parameters(), lr=0.001)
-        for epoch in range(100):
-            loss = self._train_epoch(optimizer, train_data)
+        for epoch in tqdm(range(100), desc="Training GDM model"):
+            self.model.train()
+            total_loss = 0
+            for data in train_data:
+                optimizer.zero_grad()
+                out = self.model(data)
+                loss = F.mse_loss(out, data.y)
+                loss.backward()
+                optimizer.step()
+                total_loss += loss.item()
+            return total_loss / len(train_data)
             if (epoch + 1) % 10 == 0:
-                print(f"Epoch {epoch+1}/100, Loss: {loss:.4f}")
+                tqdm.write(f"Training GDM Epoch {epoch+1}/100, Loss: {loss:.4f}")
 
     def dismantle(self, G: nx.Graph, num_nodes: int) -> List[int]:
         self.model.eval()
         data = Data(x=self.extract_features(G), edge_index=from_networkx(G).edge_index)
+        if torch.cuda.is_available():
+            data = data.to("cuda")
+
         with torch.no_grad():
             importance = self.model(data)
         nodes_to_remove = sorted(
@@ -114,15 +132,3 @@ class MLDismantling(DismantlingStrategy):
                 G = nx.watts_strogatz_graph(num_nodes, 4, 0.1)
             networks.append(G)
         return networks
-
-    def _train_epoch(self, optimizer, train_data):
-        self.model.train()
-        total_loss = 0
-        for data in train_data:
-            optimizer.zero_grad()
-            out = self.model(data)
-            loss = F.mse_loss(out, data.y)
-            loss.backward()
-            optimizer.step()
-            total_loss += loss.item()
-        return total_loss / len(train_data)
