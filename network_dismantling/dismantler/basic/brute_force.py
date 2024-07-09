@@ -12,22 +12,26 @@ class BruteForceDismantling(DismantlingStrategy):
     This dismantling strategy removes nodes in a brute-force manner, by trying all possible combinations of nodes to
     remove and checking if the dismantling condition is met. The dismantling condition is met when the largest connected
     component of the graph is smaller than a target size ratio.
-
-    Parameters
-    ----------
-    target_size_ratio : float
-        The ratio of the target size of the largest connected component to the original size of the graph.
-
-    max_depth : int
-        The maximum depth to search for a solution. If no solution is found within the maximum depth, the best solution
-        found so far is returned.
-    
     """
+
     def __init__(self, target_size_ratio=0.1, max_depth=None):
+        """
+        Initialize the dismantling strategy.
+
+        :param target_size_ratio: The target size ratio of the largest connected component after dismantling.
+        :param max_depth: The maximum depth of the brute-force search. If not set, the number of nodes to remove is used.
+        """
         self.target_size_ratio = target_size_ratio
         self.max_depth = max_depth
 
     def dismantle(self, G: nx.Graph, num_nodes: int) -> List[int]:
+        """
+        Dismantle the graph by removing nodes in a brute-force manner.
+
+        :param G: The graph to dismantle.
+        :param num_nodes: The number of nodes to remove.
+        :return: A list of node indices to remove.
+        """
         original_size = G.number_of_nodes()
         target_size = int(original_size * self.target_size_ratio)
 
@@ -45,10 +49,27 @@ class BruteForceDismantling(DismantlingStrategy):
         return self.greedy_fallback(G, num_nodes)
 
     def is_dismantled(self, G: nx.Graph, target_size: int) -> bool:
+        """
+        Check if the graph is dismantled.
+
+        :param G: The graph to check.
+        :param target_size: The target size of the largest connected component.
+        :return: True if the largest connected component is smaller than the target size, False otherwise.
+        """
         largest_cc = max(nx.connected_components(G), key=len)
         return len(largest_cc) <= target_size
 
     def greedy_fallback(self, G: nx.Graph, num_nodes: int) -> List[int]:
+        """
+        Greedy fallback dismantling strategy.
+
+        This dismantling strategy removes nodes greedily, by removing the node with the highest degree until the target
+        number of nodes is removed.
+
+        :param G: The graph to dismantle.
+        :param num_nodes: The number of nodes to remove.
+        :return: A list of node indices to remove.
+        """
         nodes_to_remove = []
         G_copy = G.copy()
         for _ in range(num_nodes):

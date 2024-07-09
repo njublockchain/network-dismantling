@@ -27,7 +27,6 @@ class NetworkDismantler:
     Class to dismantle a network using a specified strategy.
     """
 
-
     def __init__(self, strategy: DismantlingStrategy):
         """
         Initialize the dismantler with the specified strategy.

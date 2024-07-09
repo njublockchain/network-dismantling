@@ -13,7 +13,21 @@ from network_dismantling.dismantler.dismantler import DismantlingStrategy
 
 
 class GCNScoreModel(nn.Module):
+    """
+    A simple GCN model that predicts the score of each node in the graph.
+
+    This model is a simple GCN model that predicts the score of each node in the graph. The model consists of multiple
+    GCN layers with ReLU activation functions, followed by a final GCN layer that outputs the score of each node.
+    """
+
     def __init__(self, input_dim, hidden_dim, num_layers):
+        """
+        Initialize the GCN model.
+
+        :param input_dim: The dimension of the input features.
+        :param hidden_dim: The dimension of the hidden layers.
+        :param num_layers: The number of hidden layers.
+        """
         super().__init__()
         self.layers = nn.ModuleList()
         self.layers.append(GCNConv(input_dim, hidden_dim))
@@ -22,6 +36,12 @@ class GCNScoreModel(nn.Module):
         self.layers.append(GCNConv(hidden_dim, 1))
 
     def forward(self, data):
+        """
+        Forward pass of the GCN model.
+
+        :param data: The input data.
+        :return: The predicted scores of each node.
+        """
         x, edge_index = data.x, data.edge_index
         for layer in self.layers[:-1]:
             x = F.relu(layer(x, edge_index))
@@ -107,7 +127,9 @@ class CoreGDMDismantling(DismantlingStrategy):
                 total_loss += loss.item()
 
             if (epoch + 1) % 10 == 0:
-                tqdm.write(f"Training CoreGDM Epoch {epoch+1}/100, Loss: {total_loss/len(train_networks):.4f}")
+                tqdm.write(
+                    f"Training CoreGDM Epoch {epoch+1}/100, Loss: {total_loss/len(train_networks):.4f}"
+                )
 
     def prepare_data(self, G):
         features = []

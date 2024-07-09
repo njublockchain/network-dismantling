@@ -10,17 +10,42 @@ from network_dismantling.dismantler.dismantler import (
 
 
 class EvaluationMetric(ABC):
+    """
+    Abstract base class for evaluation metrics.
+
+    Evaluation metrics are used to evaluate the performance of a dismantling strategy by computing a metric on the
+    dismantled graph.
+    """
+
     @abstractmethod
     def compute(self, G: nx.Graph) -> float:
+        """
+        Compute the evaluation metric on the graph.
+
+        :param G: The graph.
+        :return: The value of the evaluation metric.
+        """
         pass
 
     @property
     @abstractmethod
     def name(self) -> str:
+        """
+        Return the name of the evaluation metric.
+
+        :return: The name of the evaluation metric.
+        """
         pass
 
 
 class EvaluationStrategy(ABC):
+    """
+    Abstract base class for evaluation strategies.
+
+    Evaluation strategies are used to evaluate the performance of a dismantling strategy by comparing the values of
+    evaluation metrics on the original and dismantled graphs.
+    """
+
     @abstractmethod
     def evaluate(
         self,
@@ -28,16 +53,37 @@ class EvaluationStrategy(ABC):
         dismantled_graph: nx.Graph,
         metrics: List[EvaluationMetric],
     ) -> Dict[str, float]:
+        """
+        Evaluate the performance of a dismantling strategy.
+
+        :param original_graph: The original graph.
+        :param dismantled_graph: The dismantled graph.
+        :param metrics: The evaluation metrics to compute.
+        :return: A dictionary mapping evaluation metric names to their values.
+        """
         pass
 
 
 class RelativeChangeStrategy(EvaluationStrategy):
+    """
+    Evaluation strategy that computes the relative change in evaluation metrics between the original and dismantled graphs.
+    """
+
     def evaluate(
         self,
         original_graph: nx.Graph,
         dismantled_graph: nx.Graph,
         metrics: List[EvaluationMetric],
     ) -> Dict[str, float]:
+        """
+        Evaluate the performance of a dismantling strategy by computing the relative change in evaluation metrics between
+        the original and dismantled graphs.
+
+        :param original_graph: The original graph.
+        :param dismantled_graph: The dismantled graph.
+        :param metrics: The evaluation metrics to compute.
+        :return: A dictionary mapping evaluation metric names to their relative changes.
+        """
         results = {}
         for metric in metrics:
             original_value = metric.compute(original_graph)
@@ -51,12 +97,25 @@ class RelativeChangeStrategy(EvaluationStrategy):
 
 
 class AbsoluteValueStrategy(EvaluationStrategy):
+    """
+    Evaluation strategy that computes the absolute values of evaluation metrics on the dismantled graph.
+    """
+
     def evaluate(
         self,
         original_graph: nx.Graph,
         dismantled_graph: nx.Graph,
         metrics: List[EvaluationMetric],
     ) -> Dict[str, float]:
+        """
+        Evaluate the performance of a dismantling strategy by computing the absolute values of evaluation metrics on the
+        dismantled graph.
+
+        :param original_graph: The original graph.
+        :param dismantled_graph: The dismantled graph.
+        :param metrics: The evaluation metrics to compute.
+        :return: A dictionary mapping evaluation metric names to their values.
+        """
         results = {}
         for metric in metrics:
             results[metric.name] = metric.compute(dismantled_graph)
@@ -67,13 +126,33 @@ class AbsoluteValueStrategy(EvaluationStrategy):
 
 
 class DismantlingEvaluator:
+    """
+    Class for evaluating dismantling strategies.
+
+    The DismantlingEvaluator class is used to evaluate the performance of dismantling strategies by comparing the values
+    of evaluation metrics on the original and dismantled graphs.
+    """
+
     def __init__(self, metrics: List[EvaluationMetric], strategy: EvaluationStrategy):
+        """
+        Initialize the dismantling evaluator.
+
+        :param metrics: The evaluation metrics to compute.
+        :param strategy: The evaluation strategy to use.
+        """
         self.metrics = metrics
         self.strategy = strategy
 
     def evaluate(
         self, original_graph: nx.Graph, dismantled_graph: nx.Graph
     ) -> Dict[str, float]:
+        """
+        Evaluate the performance of a dismantling strategy.
+
+        :param original_graph: The original graph.
+        :param dismantled_graph: The dismantled graph.
+        :return: A dictionary mapping evaluation metric names to their values.
+        """
         return self.strategy.evaluate(original_graph, dismantled_graph, self.metrics)
 
     @staticmethod
@@ -83,6 +162,16 @@ class DismantlingEvaluator:
         num_nodes_to_remove: int,
         evaluator: "DismantlingEvaluator",
     ) -> Dict[str, Dict[str, float]]:
+        """
+        Compare the performance of multiple dismantling strategies.
+
+        :param original_graph: The original graph.
+        :param dismantling_strategies: The dismantling strategies to compare.
+        :param num_nodes_to_remove: The number of nodes to remove.
+        :param evaluator: The dismantling evaluator.
+        :return: A dictionary mapping dismantling strategy names to dictionaries mapping evaluation metric names to their
+                 values.
+        """
         results = {}
         for strategy in dismantling_strategies:
             dismantler = NetworkDismantler(strategy)

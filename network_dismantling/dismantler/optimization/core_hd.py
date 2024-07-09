@@ -7,8 +7,23 @@ from scipy.sparse.csgraph import connected_components
 from network_dismantling.dismantler.dismantler import DismantlingStrategy
 from tqdm import tqdm
 
+
 class CoreHDDismantling(DismantlingStrategy):
+    """
+    Dismantling strategy that removes nodes based on their core number.
+
+    This dismantling strategy removes nodes based on their core number, which is the largest k-core that a node belongs
+    to. The nodes with the highest core number are removed first.
+    """
+
     def dismantle(self, G: nx.Graph, num_nodes: int) -> List[int]:
+        """
+        Dismantle the graph by removing nodes based on their core number.
+
+        :param G: The graph to dismantle.
+        :param num_nodes: The number of nodes to remove.
+        :return: A list of node indices to remove.
+        """
         core_numbers = nx.core_number(G)
         degrees = dict(G.degree())
 
