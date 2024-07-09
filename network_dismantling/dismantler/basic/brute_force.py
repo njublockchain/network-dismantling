@@ -6,6 +6,23 @@ from network_dismantling.dismantler.dismantler import DismantlingStrategy
 
 
 class BruteForceDismantling(DismantlingStrategy):
+    """
+    Dismantling strategy that removes nodes in a brute-force manner.
+
+    This dismantling strategy removes nodes in a brute-force manner, by trying all possible combinations of nodes to
+    remove and checking if the dismantling condition is met. The dismantling condition is met when the largest connected
+    component of the graph is smaller than a target size ratio.
+
+    Parameters
+    ----------
+    target_size_ratio : float
+        The ratio of the target size of the largest connected component to the original size of the graph.
+
+    max_depth : int
+        The maximum depth to search for a solution. If no solution is found within the maximum depth, the best solution
+        found so far is returned.
+    
+    """
     def __init__(self, target_size_ratio=0.1, max_depth=None):
         self.target_size_ratio = target_size_ratio
         self.max_depth = max_depth

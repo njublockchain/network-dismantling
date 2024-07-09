@@ -4,6 +4,12 @@ from typing import List, Tuple
 
 
 class DismantlingStrategy(ABC):
+    """
+    Abstract class for dismantling strategies.
+
+    A dismantling strategy is a method to remove nodes from a graph in order to dismantle it.
+    """
+
     @abstractmethod
     def dismantle(self, G: nx.Graph, num_nodes: int) -> List[int]:
         """
@@ -17,7 +23,17 @@ class DismantlingStrategy(ABC):
 
 
 class NetworkDismantler:
+    """
+    Class to dismantle a network using a specified strategy.
+    """
+
+
     def __init__(self, strategy: DismantlingStrategy):
+        """
+        Initialize the dismantler with the specified strategy.
+
+        :param strategy: The dismantling strategy to use
+        """
         self.strategy = strategy
 
     def dismantle(self, G: nx.Graph, num_nodes: int) -> Tuple[nx.Graph, List[int]]:
