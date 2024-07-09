@@ -1,5 +1,5 @@
 import networkx as nx
-from network_dismantling.dismanlter.influence import (
+from network_dismantling.dismantler.influence import (
     CollectiveInfluenceDismantling,
     ExplosiveImmunizationDismantling,
 )

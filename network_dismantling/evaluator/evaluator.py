@@ -3,7 +3,7 @@ import numpy as np
 from typing import List, Dict, Callable
 from abc import ABC, abstractmethod
 
-from network_dismantling.dismanlter.dismantler import (
+from network_dismantling.dismantler.dismantler import (
     DismantlingStrategy,
     NetworkDismantler,
 )

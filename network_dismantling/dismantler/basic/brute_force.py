@@ -2,7 +2,7 @@ import networkx as nx
 import itertools
 from typing import List
 
-from network_dismantling.dismanlter.dismantler import DismantlingStrategy
+from network_dismantling.dismantler.dismantler import DismantlingStrategy
 
 
 class BruteForceDismantling(DismantlingStrategy):

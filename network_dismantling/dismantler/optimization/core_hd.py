@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 from typing import List, Tuple
 from scipy.sparse import csr_matrix
 from scipy.sparse.csgraph import connected_components
-from network_dismantling.dismanlter.dismantler import DismantlingStrategy
+from network_dismantling.dismantler.dismantler import DismantlingStrategy
 from tqdm import tqdm
 
 class CoreHDDismantling(DismantlingStrategy):

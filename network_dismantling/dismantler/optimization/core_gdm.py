@@ -9,7 +9,7 @@ import numpy as np
 from typing import List
 from tqdm import tqdm
 
-from network_dismantling.dismanlter.dismantler import DismantlingStrategy
+from network_dismantling.dismantler.dismantler import DismantlingStrategy
 
 
 class GCNScoreModel(nn.Module):

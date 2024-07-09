@@ -10,7 +10,7 @@ from abc import ABC, abstractmethod
 from typing import List, Tuple
 from tqdm import tqdm
 
-from network_dismantling.dismanlter.dismantler import DismantlingStrategy
+from network_dismantling.dismantler.dismantler import DismantlingStrategy
 
 
 class GATDismantlingLayer(nn.Module):

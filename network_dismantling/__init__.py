@@ -1,2 +1,2 @@
-from .dismanlter import *
+from .dismantler import *
 from .evaluator import *

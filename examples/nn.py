@@ -1,5 +1,5 @@
 import networkx as nx
-from network_dismantling.dismanlter.optimization import (
+from network_dismantling.dismantler.optimization import (
     CoreHDDismantling,
     GNDDismantling,
     GDMDismantling,

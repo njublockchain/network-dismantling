@@ -1,6 +1,6 @@
 import networkx as nx
 from typing import List
-from network_dismantling.dismanlter.dismantler import DismantlingStrategy
+from network_dismantling.dismantler.dismantler import DismantlingStrategy
 
 
 class DegreeDismantling(DismantlingStrategy):

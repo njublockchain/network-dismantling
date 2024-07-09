@@ -1,7 +1,7 @@
 from typing import List
 import networkx as nx
 
-from network_dismantling.dismanlter.dismantler import DismantlingStrategy
+from network_dismantling.dismantler.dismantler import DismantlingStrategy
 
 
 class CollectiveInfluenceDismantling(DismantlingStrategy):
