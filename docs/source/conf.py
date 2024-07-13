@@ -36,32 +36,33 @@ extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.doctest",
     "sphinx.ext.intersphinx",
-    "sphinx.ext.todo",
     "sphinx.ext.coverage",
     "sphinx.ext.mathjax",
     "sphinx.ext.ifconfig",
     "sphinx.ext.viewcode",
     "sphinx.ext.githubpages",
-    "sphinx.ext.napoleon",
     "sphinx_rtd_theme",
     "autoapi.extension",
 ]
 
-# Napoleon settings
-napoleon_google_docstring = True
-napoleon_numpy_docstring = True
-napoleon_include_init_with_doc = True
-napoleon_include_private_with_doc = True
-napoleon_include_special_with_doc = True
-napoleon_use_admonition_for_examples = False
-napoleon_use_admonition_for_notes = False
-napoleon_use_admonition_for_references = False
-napoleon_use_ivar = False
-napoleon_use_param = True
-napoleon_use_rtype = True
+coverage_show_missing_items = True
+coverage_statistics_to_report = True
+coverage_statistics_to_stdout = True
 
 autoapi_dirs = ["../../network_dismantling"]
 autodoc_typehints = "both"
+autoapi_python_use_implicit_namespaces = True
+autoapi_own_page_level = "class"
+autoapi_options = [
+    "members",
+    "undoc-members",
+    "private-members",
+    "show-inheritance",
+    "show-module-summary",
+    "special-members",
+    "imported-members",
+]
+autoapi_root = "references"
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
@@ -209,3 +210,13 @@ html_static_path = ["_static"]
 #      author, 'network-dismantling', 'One line description of project.',
 #      'Miscellaneous'),
 # ]
+
+
+def skip_submodules(app, what, name, obj, skip, options):
+    if what == "module":
+        skip = True
+    return skip
+
+
+def setup(sphinx):
+    sphinx.connect("autoapi-skip-member", skip_submodules)
