@@ -1,6 +1,6 @@
 from .dismantler import DismantlingStrategy, NetworkDismantler
 from .operators.operator import DismantlingOperator
-from .selector import ElementSelector, EdgeSelector, NodeSelector
+from .selector import ElementSelector
 import edge_selectors
 import evaluators
 import node_selectors
@@ -13,8 +13,6 @@ __all__ = [
     "EvaluationStrategy",
     "DismantlingOperator",
     "ElementSelector",
-    "NodeSelector",
-    "EdgeSelector",
     "edge_selectors",
     "node_selectors",
     "evaluators",

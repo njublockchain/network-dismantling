@@ -1,5 +1,5 @@
 import networkx as nx
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 from typing import Any, List, Tuple
 import torch.nn as nn
 
