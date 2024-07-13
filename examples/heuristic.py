@@ -3,7 +3,7 @@ from network_dismantling.dismantler.influence import (
     CollectiveInfluenceDismantling,
     ExplosiveImmunizationDismantling,
 )
-from network_dismantling.evaluator import (
+from network_dismantling.evaluators import (
     DismantlingEvaluator,
     RelativeChangeStrategy,
     LCCSizeMetric,

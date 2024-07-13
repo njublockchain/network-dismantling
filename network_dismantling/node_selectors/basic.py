@@ -2,10 +2,10 @@ import networkx as nx
 import itertools
 from typing import List
 
-from network_dismantling.dismantler.dismantler import DismantlingStrategy
+from .node_selector import NodeSelector
 
 
-class BruteForceDismantling(DismantlingStrategy):
+class BruteForce(NodeSelector):
     """
     Dismantling strategy that removes nodes in a brute-force manner.
 
@@ -24,9 +24,9 @@ class BruteForceDismantling(DismantlingStrategy):
         self.target_size_ratio = target_size_ratio
         self.max_depth = max_depth
 
-    def dismantle(self, G: nx.Graph, num_nodes: int) -> List[int]:
+    def select(self, G: nx.Graph, num_nodes: int) -> List[int]:
         """
-        Dismantle the graph by removing nodes in a brute-force manner.
+        Select nodes to remove from the graph.
 
         :param G: The graph to dismantle.
         :param num_nodes: The number of nodes to remove.

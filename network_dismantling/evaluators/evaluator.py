@@ -1,12 +1,8 @@
 import networkx as nx
-import numpy as np
-from typing import List, Dict, Callable
+from typing import List, Dict
 from abc import ABC, abstractmethod
 
-from network_dismantling.dismantler.dismantler import (
-    DismantlingStrategy,
-    NetworkDismantler,
-)
+from network_dismantling.dismantler import NetworkDismantler
 
 
 class EvaluationMetric(ABC):
@@ -158,27 +154,16 @@ class DismantlingEvaluator:
     @staticmethod
     def compare_strategies(
         original_graph: nx.Graph,
-        dismantling_strategies: List[DismantlingStrategy],
+        dismantlers: List[NetworkDismantler],
         num_nodes_to_remove: int,
         evaluator: "DismantlingEvaluator",
     ) -> Dict[str, Dict[str, float]]:
-        """
-        Compare the performance of multiple dismantling strategies.
-
-        :param original_graph: The original graph.
-        :param dismantling_strategies: The dismantling strategies to compare.
-        :param num_nodes_to_remove: The number of nodes to remove.
-        :param evaluator: The dismantling evaluator.
-        :return: A dictionary mapping dismantling strategy names to dictionaries mapping evaluation metric names to their
-                 values.
-        """
         results = {}
-        for strategy in dismantling_strategies:
-            dismantler = NetworkDismantler(strategy)
+        for dismantler in dismantlers:
             dismantled_graph, _ = dismantler.dismantle(
                 original_graph, num_nodes_to_remove
             )
             evaluation = evaluator.evaluate(original_graph, dismantled_graph)
-            results[strategy.__class__.__name__] = evaluation
+            results[dismantler.__class__.__name__] = evaluation
 
         return results

@@ -3,7 +3,7 @@ import numpy as np
 from typing import List, Dict, Callable
 from abc import ABC, abstractmethod
 
-from network_dismantling.evaluator.evaluator import EvaluationMetric
+from network_dismantling.evaluators.evaluator import EvaluationMetric
 
 
 class NumComponentsMetric(EvaluationMetric):

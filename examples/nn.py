@@ -5,7 +5,7 @@ from network_dismantling.dismantler.optimization import (
     GDMDismantling,
     CoreGDMDismantling,
 )
-from network_dismantling.evaluator import (
+from network_dismantling.evaluators import (
     DismantlingEvaluator,
     RelativeChangeStrategy,
     LCCSizeMetric,
