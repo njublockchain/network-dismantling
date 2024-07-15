@@ -1,9 +1,7 @@
 import networkx as nx
 import numpy as np
-from abc import ABC, abstractmethod
-from typing import List, Tuple
+from typing import List
 from scipy.sparse import csr_matrix  # type: ignore
-from scipy.sparse.csgraph import connected_components  # type: ignore
 from tqdm import tqdm  # type: ignore
 
 from .node_selector import NodeSelector

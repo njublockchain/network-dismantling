@@ -6,8 +6,7 @@ from torch_geometric.nn import GATConv, GCNConv
 from torch_geometric.data import Data
 from torch_geometric.utils import from_networkx
 import numpy as np
-from abc import ABC, abstractmethod
-from typing import List, Tuple
+from typing import List
 from tqdm import tqdm
 
 from .node_selector import NodeSelector
