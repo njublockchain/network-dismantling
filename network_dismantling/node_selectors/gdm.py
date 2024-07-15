@@ -110,7 +110,7 @@ class GDM(NodeSelector):
             if (epoch + 1) % 10 == 0:
                 tqdm.write(f"Training GDM Epoch {epoch+1}/100, Loss: {loss:.4f}")
 
-    def dismantle(self, G: nx.Graph, num_nodes: int) -> List[int]:
+    def select(self, G: nx.Graph, num_nodes: int) -> List[int]:
         """
         Dismantle the graph by removing nodes based on their GDM score.
 
@@ -238,7 +238,7 @@ class CoreGDM(NodeSelector):
         self.optimizer = torch.optim.Adam(self.model.parameters(), lr=0.001)
         self.train_model()
 
-    def dismantle(self, G: nx.Graph, num_nodes: int) -> List[int]:
+    def select(self, G: nx.Graph, num_nodes: int) -> List[int]:
         nodes_to_remove = []
         G_copy = G.copy()
 

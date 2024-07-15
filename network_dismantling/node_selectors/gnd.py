@@ -29,7 +29,7 @@ class GND(NodeSelector):
         self.epsilon = epsilon
         self.max_iterations = max_iterations
 
-    def dismantle(self, G: nx.Graph, num_nodes: int) -> List[int]:
+    def select(self, G: nx.Graph, num_nodes: int) -> List[int]:
         """
         Dismantle the graph by removing nodes based on their GND score.
 
@@ -65,7 +65,7 @@ class CoreHD(NodeSelector):
     to. The nodes with the highest core number are removed first.
     """
 
-    def dismantle(self, G: nx.Graph, num_nodes: int) -> List[int]:
+    def select(self, G: nx.Graph, num_nodes: int) -> List[int]:
         """
         Dismantle the graph by removing nodes based on their core number.
 

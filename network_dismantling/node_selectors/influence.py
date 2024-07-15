@@ -21,7 +21,7 @@ class CollectiveInfluence(NodeSelector):
         """
         self.l = l  # Ball radius
 
-    def dismantle(self, G: nx.Graph, num_nodes: int) -> List[int]:
+    def select(self, G: nx.Graph, num_nodes: int) -> List[int]:
         """
         Dismantle the graph by removing nodes based on their collective influence.
 
@@ -78,7 +78,7 @@ class ExplosiveImmunization(NodeSelector):
         self.q = q  # Fraction of nodes to remove in each iteration
         self.num_iterations = num_iterations
 
-    def dismantle(self, G: nx.Graph, num_nodes: int) -> List[int]:
+    def select(self, G: nx.Graph, num_nodes: int) -> List[int]:
         """
         Dismantle the graph by removing nodes based on their explosive immunization score.
 
