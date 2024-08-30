@@ -12,7 +12,7 @@ from tqdm import tqdm
 from .node_selector import NodeSelector
 
 
-class GATLayer:
+class GATLayer(nn.Module):
     """
     A simple GAT model that predicts the score of each node in the graph.
 

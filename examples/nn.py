@@ -1,9 +1,11 @@
 import networkx as nx
-from network_dismantling.dismantler.optimization import (
-    CoreHDDismantling,
-    GNDDismantling,
-    GDMDismantling,
-    CoreGDMDismantling,
+from network_dismantling import NetworkDismantler
+from network_dismantling.operators.basic import NodeRemovalOperator
+from network_dismantling.node_selectors import (
+    CoreHD,
+    GND,
+    GDM,
+    CoreGDM,
 )
 from network_dismantling.evaluators import (
     DismantlingEvaluator,
@@ -22,11 +24,20 @@ if __name__ == "__main__":
     G = nx.karate_club_graph()
 
     # Initialize different dismantling strategies
-    dismantling_strategies = [
-        CoreHDDismantling(),
-        GNDDismantling(),
-        GDMDismantling(),
-        CoreGDMDismantling(),
+    dismantlers = [
+        NetworkDismantler(selector=GND(), operator=NodeRemovalOperator()),
+        NetworkDismantler(
+            selector=CoreHD(),
+            operator=NodeRemovalOperator(),
+        ),
+        NetworkDismantler(
+            selector=GDM(),
+            operator=NodeRemovalOperator(),
+        ),
+        NetworkDismantler(
+            selector=CoreGDM(),
+            operator=NodeRemovalOperator(),
+        ),
     ]
 
     # Initialize evaluation metrics
@@ -47,7 +58,7 @@ if __name__ == "__main__":
     # Compare strategies
     num_nodes_to_remove = int(G.number_of_nodes() * 0.1)  # Remove 10% of nodes
     comparison_results = DismantlingEvaluator.compare_strategies(
-        G, dismantling_strategies, num_nodes_to_remove, evaluator
+        G, dismantlers, num_nodes_to_remove, evaluator
     )
 
     # Print detailed results
