@@ -16,6 +16,7 @@ from network_dismantling.evaluators import (
     AvgPathLengthMetric,
     AvgClusteringMetric,
 )
+from network_dismantling.utils.early_stopper import SimpleEarlyStopper
 
 
 # Example usage
@@ -31,11 +32,11 @@ if __name__ == "__main__":
             operator=NodeRemovalOperator(),
         ),
         NetworkDismantler(
-            selector=GDM(),
+            selector=GDM(early_stopper=SimpleEarlyStopper()),
             operator=NodeRemovalOperator(),
         ),
         NetworkDismantler(
-            selector=CoreGDM(),
+            selector=CoreGDM(early_stopper=SimpleEarlyStopper()),
             operator=NodeRemovalOperator(),
         ),
     ]

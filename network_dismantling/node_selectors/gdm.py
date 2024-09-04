@@ -6,8 +6,10 @@ from torch_geometric.nn import GATConv, GCNConv
 from torch_geometric.data import Data
 from torch_geometric.utils import from_networkx
 import numpy as np
-from typing import List
+from typing import List, Optional
 from tqdm import tqdm
+
+from network_dismantling.utils.early_stopper import EarlyStopper
 
 from .node_selector import NodeSelector
 
@@ -44,7 +46,13 @@ class GDM(NodeSelector):
     the graph. The nodes with the highest GDM score are removed first.
     """
 
-    def __init__(self, hidden_dim=64, num_layers=3, heads=8):
+    def __init__(
+        self,
+        hidden_dim=64,
+        num_layers=3,
+        heads=8,
+        early_stopper: Optional[EarlyStopper] = None,
+    ):
         """
         Initialize the dismantling strategy.
 
@@ -57,6 +65,8 @@ class GDM(NodeSelector):
         self.num_layers = num_layers
         self.heads = heads
         self.model = None
+        self.early_stopper = early_stopper
+
         self.train_model()
 
     def train_model(self):
@@ -105,9 +115,9 @@ class GDM(NodeSelector):
                 loss.backward()
                 optimizer.step()
                 total_loss += loss.item()
-            return total_loss / len(train_data)
-            if (epoch + 1) % 10 == 0:
-                tqdm.write(f"Training GDM Epoch {epoch+1}/100, Loss: {loss:.4f}")
+            loss = total_loss / len(train_data)
+            if self.early_stopper is not None and self.early_stopper.should_stop(loss):
+                break
 
     def select(self, G: nx.Graph, num_nodes: int) -> List[int]:
         """
@@ -224,7 +234,9 @@ class GCNScoreModel(nn.Module):
 
 
 class CoreGDM(NodeSelector):
-    def __init__(self, hidden_dim=64, num_layers=3):
+    def __init__(
+        self, hidden_dim=64, num_layers=3, early_stopper: Optional[EarlyStopper] = None
+    ):
         super().__init__()
         self.hidden_dim = hidden_dim
         self.num_layers = num_layers
@@ -235,6 +247,7 @@ class CoreGDM(NodeSelector):
             self.model = self.model.to("cuda")
 
         self.optimizer = torch.optim.Adam(self.model.parameters(), lr=0.001)
+        self.early_stopper = early_stopper
         self.train_model()
 
     def select(self, G: nx.Graph, num_nodes: int) -> List[int]:
@@ -299,11 +312,9 @@ class CoreGDM(NodeSelector):
                 self.optimizer.step()
 
                 total_loss += loss.item()
-
-            if (epoch + 1) % 10 == 0:
-                tqdm.write(
-                    f"Training CoreGDM Epoch {epoch+1}/100, Loss: {total_loss/len(train_networks):.4f}"
-                )
+            loss = total_loss / len(train_networks)
+            if self.early_stopper is not None and self.early_stopper.should_stop(loss):
+                break
 
     def prepare_data(self, G):
         features = []

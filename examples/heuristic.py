@@ -57,4 +57,4 @@ if __name__ == "__main__":
     for strategy_name, metrics in comparison_results.items():
         print(f"\n{strategy_name}:")
         for metric, value in metrics.items():
-            print(f"  {metric}: {value:.4f}")
+            print(f"\t{metric}: {value:.4f}")
