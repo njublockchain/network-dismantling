@@ -1,4 +1,5 @@
-import networkx as nx
+import graph_tool.all as gt
+
 from typing import List, Dict
 from abc import ABC, abstractmethod
 
@@ -14,7 +15,7 @@ class EvaluationMetric(ABC):
     """
 
     @abstractmethod
-    def compute(self, G: nx.Graph) -> float:
+    def compute(self, G: gt.Graph) -> float:
         """
         Compute the evaluation metric on the graph.
 
@@ -45,8 +46,8 @@ class EvaluationStrategy(ABC):
     @abstractmethod
     def evaluate(
         self,
-        original_graph: nx.Graph,
-        dismantled_graph: nx.Graph,
+        original_graph: gt.Graph,
+        dismantled_graph: gt.Graph,
         metrics: List[EvaluationMetric],
     ) -> Dict[str, float]:
         """
@@ -67,8 +68,8 @@ class RelativeChangeStrategy(EvaluationStrategy):
 
     def evaluate(
         self,
-        original_graph: nx.Graph,
-        dismantled_graph: nx.Graph,
+        original_graph: gt.Graph,
+        dismantled_graph: gt.Graph,
         metrics: List[EvaluationMetric],
     ) -> Dict[str, float]:
         """
@@ -99,8 +100,8 @@ class AbsoluteValueStrategy(EvaluationStrategy):
 
     def evaluate(
         self,
-        original_graph: nx.Graph,
-        dismantled_graph: nx.Graph,
+        original_graph: gt.Graph,
+        dismantled_graph: gt.Graph,
         metrics: List[EvaluationMetric],
     ) -> Dict[str, float]:
         """
@@ -140,7 +141,7 @@ class DismantlingEvaluator:
         self.strategy = strategy
 
     def evaluate(
-        self, original_graph: nx.Graph, dismantled_graph: nx.Graph
+        self, original_graph: gt.Graph, dismantled_graph: gt.Graph
     ) -> Dict[str, float]:
         """
         Evaluate the performance of a dismantling strategy.
@@ -153,7 +154,7 @@ class DismantlingEvaluator:
 
     @staticmethod
     def compare_strategies(
-        original_graph: nx.Graph,
+        original_graph: gt.Graph,
         dismantlers: List[NetworkDismantler],
         num_nodes_to_remove: int,
         evaluator: "DismantlingEvaluator",

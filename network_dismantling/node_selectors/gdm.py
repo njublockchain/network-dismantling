@@ -1,4 +1,4 @@
-import networkx as nx
+import graph_tool.all as gt
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -119,7 +119,7 @@ class GDM(NodeSelector):
             if self.early_stopper is not None and self.early_stopper.should_stop(loss):
                 break
 
-    def select(self, G: nx.Graph, num_nodes: int) -> List[int]:
+    def select(self, G: gt.Graph, num_nodes: int) -> List[int]:
         """
         Dismantle the graph by removing nodes based on their GDM score.
 
@@ -139,7 +139,7 @@ class GDM(NodeSelector):
         )[:num_nodes]
         return [node for node, _ in nodes_to_remove]
 
-    def compute_omega(self, G: nx.Graph, removed_nodes: List[int]) -> float:
+    def compute_omega(self, G: gt.Graph, removed_nodes: List[int]) -> float:
         """
         Compute the GDM dismantling efficiency of the removed nodes.
 
@@ -163,10 +163,12 @@ class GDM(NodeSelector):
         :return: A tensor of node features.
         """
         features = []
+        local_clustering = gt.local_clustering(G)
+        kcore_decomposition = gt.kcore_decomposition(G)
         for node in G.nodes():
             degree = G.degree(node)
-            clustering = nx.clustering(G, node)
-            k_core = nx.core_number(G)[node]
+            clustering = local_clustering[node]
+            k_core = kcore_decomposition[node]
             chi_square = (
                 sum((G.degree(n) - degree) ** 2 for n in G.neighbors(node)) / degree
                 if degree > 0
@@ -174,26 +176,6 @@ class GDM(NodeSelector):
             )
             features.append([degree, clustering, k_core, chi_square])
         return torch.tensor(features, dtype=torch.float)
-
-    @staticmethod
-    def generate_synthetic_networks(num_networks, num_nodes):
-        """
-        Generate synthetic networks for training the GDM model.
-
-        :param num_networks: The number of synthetic networks to generate.
-        :param num_nodes: The number of nodes in each synthetic network.
-        :return: A list of synthetic networks.
-        """
-        networks = []
-        for _ in range(num_networks):
-            if np.random.random() < 0.33:
-                G = nx.barabasi_albert_graph(num_nodes, 3)
-            elif np.random.random() < 0.66:
-                G = nx.erdos_renyi_graph(num_nodes, 0.1)
-            else:
-                G = nx.watts_strogatz_graph(num_nodes, 4, 0.1)
-            networks.append(G)
-        return networks
 
 
 class GCNScoreModel(nn.Module):
@@ -250,13 +232,13 @@ class CoreGDM(NodeSelector):
         self.early_stopper = early_stopper
         self.train_model()
 
-    def select(self, G: nx.Graph, num_nodes: int) -> List[int]:
+    def select(self, G: gt.Graph, num_nodes: int) -> List[int]:
         nodes_to_remove = []
         G_copy = G.copy()
 
         while len(nodes_to_remove) < num_nodes:
             # Get 2-core of the network
-            two_core = nx.k_core(G_copy, k=2)
+            two_core = gt.k_core(G_copy, k=2)
             if len(two_core) == 0:
                 # If 2-core is empty, remove nodes from the remaining graph
                 remaining_nodes = list(G_copy.nodes())
@@ -289,7 +271,7 @@ class CoreGDM(NodeSelector):
         for epoch in tqdm(range(100), desc="Training CoreGDM model"):
             total_loss = 0
             for G in train_networks:
-                two_core = nx.k_core(G, k=2)
+                two_core = gt.k_core(G, k=2)
                 if len(two_core) == 0:
                     continue
 
@@ -318,9 +300,9 @@ class CoreGDM(NodeSelector):
 
     def prepare_data(self, G):
         features = []
-        clustering_mapping = nx.clustering(G)
-        eigenvector_centrality_mapping = nx.eigenvector_centrality_numpy(G)
-        core_number_mapping = nx.core_number(G)
+        clustering_mapping = gt.clustering(G)
+        eigenvector_centrality_mapping = gt.eigenvector_centrality_numpy(G)
+        core_number_mapping = gt.core_number(G)
         for node in G.nodes():
             degree = G.degree(node)
             clustering = clustering_mapping[node]
@@ -338,10 +320,10 @@ class CoreGDM(NodeSelector):
         networks = []
         for _ in range(num_networks):
             if np.random.random() < 0.33:
-                G = nx.barabasi_albert_graph(num_nodes, 3)
+                G = gt.barabasi_albert_graph(num_nodes, 3)
             elif np.random.random() < 0.66:
-                G = nx.erdos_renyi_graph(num_nodes, 0.1)
+                G = gt.erdos_renyi_graph(num_nodes, 0.1)
             else:
-                G = nx.watts_strogatz_graph(num_nodes, 4, 0.1)
+                G = gt.watts_strogatz_graph(num_nodes, 4, 0.1)
             networks.append(G)
         return networks

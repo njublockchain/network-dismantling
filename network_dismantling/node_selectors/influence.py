@@ -1,8 +1,9 @@
+import graph_tool.all as gt
+
 from collections import defaultdict
 from typing import List
-import networkx as nx
 
-from .node_selector import NodeSelector
+from network_dismantling.node_selectors.node_selector import NodeSelector
 
 
 class CollectiveInfluence(NodeSelector):
@@ -21,7 +22,7 @@ class CollectiveInfluence(NodeSelector):
         """
         self.l = l  # Ball radius
 
-    def select(self, G: nx.Graph, num_nodes: int) -> List[int]:
+    def select(self, G: gt.Graph, num_nodes: int) -> List[int]:
         """
         Dismantle the graph by removing nodes based on their collective influence.
 
@@ -52,7 +53,7 @@ class CollectiveInfluence(NodeSelector):
         ci_scores = {}
         for node in G.nodes():
             ki = G.degree(node)
-            ball = nx.single_source_shortest_path_length(G, node, cutoff=self.l)
+            ball = gt.single_source_shortest_path_length(G, node, cutoff=self.l)
             ball_boundary = [n for n in ball if ball[n] == self.l]
             ci = (ki - 1) * sum(G.degree(v) - 1 for v in ball_boundary)
             ci_scores[node] = ci
@@ -78,7 +79,7 @@ class ExplosiveImmunization(NodeSelector):
         self.q = q  # Fraction of nodes to remove in each iteration
         self.num_iterations = num_iterations
 
-    def select(self, G: nx.Graph, num_nodes: int) -> List[int]:
+    def select(self, G: gt.Graph, num_nodes: int) -> List[int]:
         """
         Dismantle the graph by removing nodes based on their explosive immunization score.
 
@@ -112,7 +113,7 @@ class ExplosiveImmunization(NodeSelector):
         """
         scores = defaultdict(float)
         for _ in range(self.num_iterations):
-            components = list(nx.connected_components(G))
+            components = list(gt.connected_components(G))
             for component in components:
                 if len(component) > 1:
                     subgraph = G.subgraph(component)
@@ -131,5 +132,5 @@ class ExplosiveImmunization(NodeSelector):
         """
         G_copy = G.copy()
         G_copy.remove_node(node)
-        new_components = list(nx.connected_components(G_copy))
+        new_components = list(gt.connected_components(G_copy))
         return sum(len(c) * (len(c) - 1) for c in new_components)

@@ -1,5 +1,5 @@
-import networkx as nx
 import itertools
+import graph_tool.all as gt
 from typing import List
 
 from .node_selector import NodeSelector
@@ -24,7 +24,7 @@ class BruteForce(NodeSelector):
         self.target_size_ratio = target_size_ratio
         self.max_depth = max_depth
 
-    def select(self, G: nx.Graph, num_nodes: int) -> List[int]:
+    def select(self, G: gt.Graph, num_nodes: int) -> List[int]:
         """
         Select nodes to remove from the graph.
 
@@ -48,7 +48,7 @@ class BruteForce(NodeSelector):
         # If no solution found within max_depth, return the best found so far
         return self.greedy_fallback(G, num_nodes)
 
-    def is_dismantled(self, G: nx.Graph, target_size: int) -> bool:
+    def is_dismantled(self, G: gt.Graph, target_size: int) -> bool:
         """
         Check if the graph is dismantled.
 
@@ -56,10 +56,10 @@ class BruteForce(NodeSelector):
         :param target_size: The target size of the largest connected component.
         :return: True if the largest connected component is smaller than the target size, False otherwise.
         """
-        largest_cc = max(nx.connected_components(G), key=len)
+        largest_cc = max(gt.connected_components(G), key=len)
         return len(largest_cc) <= target_size
 
-    def greedy_fallback(self, G: nx.Graph, num_nodes: int) -> List[int]:
+    def greedy_fallback(self, G: gt.Graph, num_nodes: int) -> List[int]:
         """
         Greedy fallback dismantling strategy.
 

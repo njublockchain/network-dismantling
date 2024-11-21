@@ -1,7 +1,6 @@
-from collections import deque
-import networkx as nx
-
 from typing import Any, List
+import graph_tool.all as gt
+from collections import deque
 from network_dismantling.operators.operator import DismantlingOperator
 
 
@@ -12,7 +11,7 @@ class NodeRemovalOperator(DismantlingOperator):
     This dismantling operator removes nodes from the graph.
     """
 
-    def operate(self, G: nx.Graph, elements: List[Any]) -> nx.Graph:
+    def operate(self, G: gt.Graph, elements: List[Any]) -> gt.Graph:
         """
         Remove nodes from the graph.
 
@@ -21,11 +20,11 @@ class NodeRemovalOperator(DismantlingOperator):
         :return: The modified graph
         """
         H = G.copy()
-        H.remove_nodes_from(elements)
+        H.remove_vertex(elements)
         return H
 
 class TemporalNodeNeighborEgdesRemovalOperator(DismantlingOperator):
-    def operate(self, G: nx.Graph, elements: List[Any]) -> nx.Graph:
+    def operate(self, G: gt.Graph, elements: List[Any]) -> gt.Graph:
         """
         Remove nodes from the graph.
 
@@ -119,7 +118,7 @@ class EdgeRemovalOperator(DismantlingOperator):
     This dismantling operator removes edges from the graph.
     """
 
-    def operate(self, G: nx.Graph, elements: List[Any]) -> nx.Graph:
+    def operate(self, G: gt.Graph, elements: List[Any]) -> gt.Graph:
         """
         Remove edges from the graph.
 
@@ -138,7 +137,7 @@ class TemporalEdgeRemovalOperator(DismantlingOperator):
     This dismantling operator removes edges from the graph.
     """
 
-    def operate(self, G: nx.Graph, elements: List[Any]) -> nx.Graph:
+    def operate(self, G: gt.Graph, elements: List[Any]) -> gt.Graph:
         """
         Remove edges from the graph.
 

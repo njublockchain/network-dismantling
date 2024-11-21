@@ -1,5 +1,4 @@
-import networkx as nx
-
+import graph_tool.all as gt
 from abc import abstractmethod
 from typing import Any, List, Tuple
 from network_dismantling.selector import ElementSelector
@@ -13,7 +12,7 @@ class EdgeSelector(ElementSelector):
     """
 
     @abstractmethod
-    def select(self, G: nx.Graph, num_edges: int) -> List[Tuple[Any, Any]]:
+    def select(self, G: gt.Graph, num_edges: int) -> List[Tuple[Any, Any]]:
         """
         Select edges from the graph.
 

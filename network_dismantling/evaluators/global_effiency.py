@@ -1,7 +1,6 @@
-import networkx as nx
+import graph_tool.all as gt
 import numpy as np
-from typing import List, Dict, Callable
-from abc import ABC, abstractmethod
+from typing import List, Dict
 
 from network_dismantling.evaluators.evaluator import EvaluationMetric
 
@@ -14,14 +13,14 @@ class GlobalEfficiencyMetric(EvaluationMetric):
     average of the inverse shortest path lengths between all pairs of nodes in the graph.
     """
 
-    def compute(self, G: nx.Graph) -> float:
+    def compute(self, G: gt.Graph) -> float:
         """
         Compute the global efficiency of the graph.
 
         :param G: The graph.
         :return: The global efficiency of the graph.
         """
-        return nx.global_efficiency(G)
+        return gt.global_efficiency(G)
 
     @property
     def name(self) -> str:

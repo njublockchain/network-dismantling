@@ -1,8 +1,11 @@
-from .basic import BruteForce
-from .centrality import Betweenness, Degree
-from .gdm import GDM, CoreGDM
-from .gnd import GND, CoreHD
-from .influence import CollectiveInfluence, ExplosiveImmunization
+from network_dismantling.node_selectors.basic import BruteForce
+from network_dismantling.node_selectors.centrality import Betweenness, Degree
+from network_dismantling.node_selectors.gdm import GDM, CoreGDM
+from network_dismantling.node_selectors.gnd import GND, CoreHD
+from network_dismantling.node_selectors.influence import (
+    CollectiveInfluence,
+    ExplosiveImmunization,
+)
 
 __all__ = [
     "BruteForce",

@@ -1,4 +1,4 @@
-import networkx as nx
+import graph_tool.all as gt
 from abc import abstractmethod
 from typing import Any, List, Tuple
 import torch.nn as nn
@@ -15,7 +15,7 @@ class DismantlingStrategy(nn.Module):
     """
 
     @abstractmethod
-    def dismantle(self, G: nx.Graph, num_nodes: int) -> List[int]:
+    def dismantle(self, G: gt.Graph, num_nodes: int) -> List[int]:
         """
         Dismantle the graph by removing nodes.
 
@@ -44,7 +44,7 @@ class NetworkDismantler:
         self.selector = selector
         self.operator = operator
 
-    def dismantle(self, G: nx.Graph, num_elements: int) -> Tuple[nx.Graph, List[Any]]:
+    def dismantle(self, G: gt.Graph, num_elements: int) -> Tuple[gt.Graph, List[Any]]:
         """
         Dismantle the graph by removing elements.
 
