@@ -56,8 +56,8 @@ class BruteForce(NodeSelector):
         :param target_size: The target size of the largest connected component.
         :return: True if the largest connected component is smaller than the target size, False otherwise.
         """
-        largest_cc = max(gt.connected_components(G), key=len)
-        return len(largest_cc) <= target_size
+        lcc = gt.extract_largest_component(G)
+        return lcc.num_vertices() <= target_size
 
     def greedy_fallback(self, G: gt.Graph, num_nodes: int) -> List[int]:
         """

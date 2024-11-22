@@ -63,14 +63,16 @@ class SyntheticDatasetGenerator:
         )
 
     @staticmethod
-    def generate_synthetic_networks(num_networks: int, num_nodes: int) -> List[gt.Graph]:
+    def generate_synthetic_networks(
+        num_networks: int, num_nodes: int
+    ) -> List[gt.Graph]:
         """
         Generate synthetic networks for training the GDM model using graph-tool.
 
         Args:
             num_networks: The number of synthetic networks to generate
             num_nodes: The number of nodes in each synthetic network
-        
+
         Returns:
             List of synthetic networks as graph-tool Graph objects
         """
@@ -81,23 +83,23 @@ class SyntheticDatasetGenerator:
                 # Barabási-Albert model using Price network
                 # m=3 new edges per vertex
                 G = gt.price_network(num_nodes, m=3, directed=False)
-                
+
             elif rand < 0.66:
-                # Erdős-Rényi model 
+                # Erdős-Rényi model
                 # p=0.1 edge probability
-                G = gt.random_graph(num_nodes, 
-                                lambda: np.random.binomial(1, 0.1), 
-                                directed=False)
-                
+                G = gt.random_graph(
+                    num_nodes, lambda: np.random.binomial(1, 0.1), directed=False
+                )
+
             else:
                 # Watts-Strogatz model
                 # First create regular ring lattice
-                G = gt.lattice([num_nodes], dim=1, k=4, periodic=True)
+                G = gt.lattice([num_nodes], periodic=True)
                 # Then rewire with probability 0.1
-                gt.random_rewire(G, model="erdos", 
-                            n_iter=G.num_edges()*0.1,
-                            edge_sweep=True)
-                
+                gt.random_rewire(
+                    G, model="erdos", n_iter=G.num_edges() * 0.1, edge_sweep=True
+                )
+
             networks.append(G)
         return networks
 

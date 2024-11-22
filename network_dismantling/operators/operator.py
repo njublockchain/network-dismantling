@@ -14,4 +14,3 @@ class DismantlingOperator(ABC):
         :param elements: Elements to operate on
         :return: The modified graph
         """
-        pass

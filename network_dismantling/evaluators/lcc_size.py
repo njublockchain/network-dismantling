@@ -1,8 +1,5 @@
 import graph_tool.all as gt
 
-from typing import List, Dict, Callable
-from abc import ABC, abstractmethod
-
 from network_dismantling.evaluators.evaluator import EvaluationMetric
 
 
@@ -20,7 +17,8 @@ class LCCSizeMetric(EvaluationMetric):
         :param G: The graph.
         :return: The size of the largest connected component of the graph.
         """
-        return len(max(gt.connected_components(G), key=len))
+        lcc = gt.extract_largest_component(G)
+        return lcc.num_vertices()
 
     @property
     def name(self) -> str:

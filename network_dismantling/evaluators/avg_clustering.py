@@ -18,7 +18,8 @@ class AvgClusteringMetric(EvaluationMetric):
         :param G: The graph.
         :return: The average clustering coefficient of the graph.
         """
-        return gt.average_clustering(G)
+        clustering = gt.local_clustering(G)
+        return clustering.a.mean()
 
     @property
     def name(self) -> str:

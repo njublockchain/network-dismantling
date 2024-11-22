@@ -23,6 +23,7 @@ class NodeRemovalOperator(DismantlingOperator):
         H.remove_vertex(elements)
         return H
 
+
 class TemporalNodeNeighborEgdesRemovalOperator(DismantlingOperator):
     def operate(self, G: gt.Graph, elements: List[Any]) -> gt.Graph:
         """
@@ -38,6 +39,7 @@ class TemporalNodeNeighborEgdesRemovalOperator(DismantlingOperator):
 
     # cannot use the original data, because the original data does not have the message, time, and message_type attributes
     def dismantling_from_nodes(
+        self,
         G,
         nodes,
         message_type_label="message_type",
@@ -130,6 +132,7 @@ class EdgeRemovalOperator(DismantlingOperator):
         H.remove_edges_from(elements)
         return H
 
+
 class TemporalEdgeRemovalOperator(DismantlingOperator):
     """
     Dismantling operator that removes edges from the graph.
@@ -150,6 +153,7 @@ class TemporalEdgeRemovalOperator(DismantlingOperator):
         return H
 
     def dismantling_from_edges(
+        self,
         G,
         edges,
         message_type_label="message_type",

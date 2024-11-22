@@ -22,7 +22,6 @@ class EvaluationMetric(ABC):
         :param G: The graph.
         :return: The value of the evaluation metric.
         """
-        pass
 
     @property
     @abstractmethod
@@ -32,7 +31,6 @@ class EvaluationMetric(ABC):
 
         :return: The name of the evaluation metric.
         """
-        pass
 
 
 class EvaluationStrategy(ABC):
@@ -58,7 +56,6 @@ class EvaluationStrategy(ABC):
         :param metrics: The evaluation metrics to compute.
         :return: A dictionary mapping evaluation metric names to their values.
         """
-        pass
 
 
 class RelativeChangeStrategy(EvaluationStrategy):
@@ -87,9 +84,11 @@ class RelativeChangeStrategy(EvaluationStrategy):
             dismantled_value = metric.compute(dismantled_graph)
             relative_change = (dismantled_value - original_value) / original_value
             results[metric.name] = relative_change
+
         results["Removed Nodes"] = (
-            1 - dismantled_graph.number_of_nodes() / original_graph.number_of_nodes()
-        )
+            original_graph.num_vertices() - dismantled_graph.num_vertices()
+        ) / original_graph.num_vertices()
+
         return results
 
 
@@ -165,6 +164,7 @@ class DismantlingEvaluator:
                 original_graph, num_nodes_to_remove
             )
             evaluation = evaluator.evaluate(original_graph, dismantled_graph)
-            results[dismantler.__class__.__name__] = evaluation
+            strategy_name = dismantler.selector.__class__.__name__ + " with " + dismantler.operator.__class__.__name__
+            results[strategy_name] = evaluation
 
         return results

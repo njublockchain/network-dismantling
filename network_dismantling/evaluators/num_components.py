@@ -18,7 +18,8 @@ class NumComponentsMetric(EvaluationMetric):
         :param G: The graph.
         :return: The number of connected components of the graph.
         """
-        return gt.number_connected_components(G)
+        _, hist = gt.label_components(G)
+        return len(hist)
 
     @property
     def name(self) -> str:

@@ -19,8 +19,9 @@ class AvgPathLengthMetric(EvaluationMetric):
         :param G: The graph.
         :return: The average path length of the graph.
         """
-        lcc = max(gt.connected_components(G), key=len)
-        return gt.average_shortest_path_length(G.subgraph(lcc))
+        lcc = gt.extract_largest_component(G)
+        distances = gt.shortest_distance(lcc)
+        return distances[distances != float("inf")].a.mean()
 
     @property
     def name(self) -> str:

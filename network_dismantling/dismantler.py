@@ -23,7 +23,6 @@ class DismantlingStrategy(nn.Module):
         :param num_nodes: Number of nodes to remove
         :return: List of node IDs to remove
         """
-        pass
 
 
 class NetworkDismantler:

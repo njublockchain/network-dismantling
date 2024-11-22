@@ -14,4 +14,3 @@ class ElementSelector(ABC):
         :param num_elements: Number of elements to select
         :return: List of selected elements
         """
-        pass
