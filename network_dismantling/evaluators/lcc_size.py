@@ -1,7 +1,4 @@
-import networkx as nx
-import numpy as np
-from typing import List, Dict, Callable
-from abc import ABC, abstractmethod
+import graph_tool.all as gt
 
 from network_dismantling.evaluators.evaluator import EvaluationMetric
 
@@ -13,14 +10,15 @@ class LCCSizeMetric(EvaluationMetric):
     The size of the largest connected component is a measure of the size of the largest connected subgraph of the graph.
     """
 
-    def compute(self, G: nx.Graph) -> float:
+    def compute(self, G: gt.Graph) -> float:
         """
         Compute the size of the largest connected component of the graph.
 
         :param G: The graph.
         :return: The size of the largest connected component of the graph.
         """
-        return len(max(nx.connected_components(G), key=len))
+        lcc = gt.extract_largest_component(G)
+        return lcc.num_vertices()
 
     @property
     def name(self) -> str:

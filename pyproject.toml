@@ -8,11 +8,9 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.10"
-networkx = "^3.3"
 
 [tool.poetry.group.dev.dependencies]
 black = "*"
-mypy = "*"
 
 [tool.poetry.group.docs.dependencies]
 sphinx = "^7.3.7"

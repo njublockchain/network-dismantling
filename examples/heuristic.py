@@ -1,4 +1,5 @@
-import networkx as nx
+import graph_tool.all as gt
+
 from network_dismantling.node_selectors import (
     CollectiveInfluence,
     ExplosiveImmunization,
@@ -19,7 +20,7 @@ from network_dismantling.evaluators import (
 # Example usage
 if __name__ == "__main__":
     # Create a test graph
-    G = nx.karate_club_graph()
+    G = gt.collection.data["karate"]
 
     # Initialize different dismantling strategies
     dismantlers = [
@@ -48,7 +49,7 @@ if __name__ == "__main__":
     evaluator = DismantlingEvaluator(metrics, evaluation_strategy)
 
     # Compare strategies
-    num_nodes_to_remove = int(G.number_of_nodes() * 0.1)  # Remove 10% of nodes
+    num_nodes_to_remove = int(G.num_vertices() * 0.1)  # Remove 10% of nodes
     comparison_results = DismantlingEvaluator.compare_strategies(
         G, dismantlers, num_nodes_to_remove, evaluator
     )

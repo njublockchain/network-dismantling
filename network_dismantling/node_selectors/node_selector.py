@@ -1,4 +1,4 @@
-import networkx as nx
+import graph_tool.all as gt
 
 from abc import abstractmethod
 from typing import Any, List
@@ -13,12 +13,12 @@ class NodeSelector(ElementSelector):
     """
 
     @abstractmethod
-    def select(self, G: nx.Graph, num_nodes: int) -> List[Any]:
+    def select(self, G: gt.Graph, num_elements: int) -> List[Any]:
         """
         Select nodes from the graph.
 
         :param G: The input graph
-        :param num_nodes: Number of nodes to select
+        :param num_elements: Number of nodes to select
         :return: List of selected nodes
         """
-        pass
+

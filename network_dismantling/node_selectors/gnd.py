@@ -1,8 +1,8 @@
-import networkx as nx
+import graph_tool.all as gt
 import numpy as np
 from typing import List
-from scipy.sparse import csr_matrix  # type: ignore
-from tqdm import tqdm  # type: ignore
+from scipy.sparse import csr_matrix
+from tqdm import tqdm
 
 from .node_selector import NodeSelector
 
@@ -27,7 +27,7 @@ class GND(NodeSelector):
         self.epsilon = epsilon
         self.max_iterations = max_iterations
 
-    def select(self, G: nx.Graph, num_nodes: int) -> List[int]:
+    def select(self, G: gt.Graph, num_nodes: int) -> List[int]:
         """
         Dismantle the graph by removing nodes based on their GND score.
 
@@ -35,7 +35,7 @@ class GND(NodeSelector):
         :param num_nodes: The number of nodes to remove.
         :return: A list of node indices to remove.
         """
-        A = nx.adjacency_matrix(G)
+        A = gt.adjacency(G)
         N = A.shape[0]
         D = np.array(A.sum(axis=1)).flatten()
         L = csr_matrix(np.diag(D) - A)
@@ -63,7 +63,7 @@ class CoreHD(NodeSelector):
     to. The nodes with the highest core number are removed first.
     """
 
-    def select(self, G: nx.Graph, num_nodes: int) -> List[int]:
+    def select(self, G: gt.Graph, num_nodes: int) -> List[int]:
         """
         Dismantle the graph by removing nodes based on their core number.
 
@@ -71,11 +71,12 @@ class CoreHD(NodeSelector):
         :param num_nodes: The number of nodes to remove.
         :return: A list of node indices to remove.
         """
-        core_numbers = nx.core_number(G)
-        degrees = dict(G.degree())
-
         nodes_to_remove = []
+
         for _ in tqdm(range(num_nodes), desc="CoreHD Dismantling"):
+            core_numbers = dict(enumerate(gt.kcore_decomposition(G).get_array()))
+            degrees = G.degree_property_map()
+
             max_core = max(core_numbers.values())
             candidates = [
                 node for node, core in core_numbers.items() if core == max_core
@@ -84,9 +85,5 @@ class CoreHD(NodeSelector):
 
             nodes_to_remove.append(node_to_remove)
             G.remove_node(node_to_remove)
-
-            # Update core numbers and degrees
-            core_numbers = nx.core_number(G)
-            degrees = dict(G.degree())
 
         return nodes_to_remove

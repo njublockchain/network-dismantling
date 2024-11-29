@@ -1,4 +1,4 @@
-import networkx as nx
+import graph_tool.all as gt
 
 
 from network_dismantling.evaluators.evaluator import EvaluationMetric
@@ -12,15 +12,16 @@ class AvgPathLengthMetric(EvaluationMetric):
     length is the average of the shortest path lengths between all pairs of nodes in the graph.
     """
 
-    def compute(self, G: nx.Graph) -> float:
+    def compute(self, G: gt.Graph) -> float:
         """
         Compute the average path length of the graph.
 
         :param G: The graph.
         :return: The average path length of the graph.
         """
-        lcc = max(nx.connected_components(G), key=len)
-        return nx.average_shortest_path_length(G.subgraph(lcc))
+        lcc = gt.extract_largest_component(G)
+        distances = gt.shortest_distance(lcc)
+        return distances[distances != float("inf")].a.mean()
 
     @property
     def name(self) -> str:

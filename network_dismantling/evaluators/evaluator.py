@@ -1,4 +1,5 @@
-import networkx as nx
+import graph_tool.all as gt
+
 from typing import List, Dict
 from abc import ABC, abstractmethod
 
@@ -14,14 +15,13 @@ class EvaluationMetric(ABC):
     """
 
     @abstractmethod
-    def compute(self, G: nx.Graph) -> float:
+    def compute(self, G: gt.Graph) -> float:
         """
         Compute the evaluation metric on the graph.
 
         :param G: The graph.
         :return: The value of the evaluation metric.
         """
-        pass
 
     @property
     @abstractmethod
@@ -31,7 +31,6 @@ class EvaluationMetric(ABC):
 
         :return: The name of the evaluation metric.
         """
-        pass
 
 
 class EvaluationStrategy(ABC):
@@ -45,8 +44,8 @@ class EvaluationStrategy(ABC):
     @abstractmethod
     def evaluate(
         self,
-        original_graph: nx.Graph,
-        dismantled_graph: nx.Graph,
+        original_graph: gt.Graph,
+        dismantled_graph: gt.Graph,
         metrics: List[EvaluationMetric],
     ) -> Dict[str, float]:
         """
@@ -57,7 +56,6 @@ class EvaluationStrategy(ABC):
         :param metrics: The evaluation metrics to compute.
         :return: A dictionary mapping evaluation metric names to their values.
         """
-        pass
 
 
 class RelativeChangeStrategy(EvaluationStrategy):
@@ -67,8 +65,8 @@ class RelativeChangeStrategy(EvaluationStrategy):
 
     def evaluate(
         self,
-        original_graph: nx.Graph,
-        dismantled_graph: nx.Graph,
+        original_graph: gt.Graph,
+        dismantled_graph: gt.Graph,
         metrics: List[EvaluationMetric],
     ) -> Dict[str, float]:
         """
@@ -86,9 +84,11 @@ class RelativeChangeStrategy(EvaluationStrategy):
             dismantled_value = metric.compute(dismantled_graph)
             relative_change = (dismantled_value - original_value) / original_value
             results[metric.name] = relative_change
+
         results["Removed Nodes"] = (
-            1 - dismantled_graph.number_of_nodes() / original_graph.number_of_nodes()
-        )
+            original_graph.num_vertices() - dismantled_graph.num_vertices()
+        ) / original_graph.num_vertices()
+
         return results
 
 
@@ -99,8 +99,8 @@ class AbsoluteValueStrategy(EvaluationStrategy):
 
     def evaluate(
         self,
-        original_graph: nx.Graph,
-        dismantled_graph: nx.Graph,
+        original_graph: gt.Graph,
+        dismantled_graph: gt.Graph,
         metrics: List[EvaluationMetric],
     ) -> Dict[str, float]:
         """
@@ -140,7 +140,7 @@ class DismantlingEvaluator:
         self.strategy = strategy
 
     def evaluate(
-        self, original_graph: nx.Graph, dismantled_graph: nx.Graph
+        self, original_graph: gt.Graph, dismantled_graph: gt.Graph
     ) -> Dict[str, float]:
         """
         Evaluate the performance of a dismantling strategy.
@@ -153,7 +153,7 @@ class DismantlingEvaluator:
 
     @staticmethod
     def compare_strategies(
-        original_graph: nx.Graph,
+        original_graph: gt.Graph,
         dismantlers: List[NetworkDismantler],
         num_nodes_to_remove: int,
         evaluator: "DismantlingEvaluator",
@@ -164,6 +164,7 @@ class DismantlingEvaluator:
                 original_graph, num_nodes_to_remove
             )
             evaluation = evaluator.evaluate(original_graph, dismantled_graph)
-            results[dismantler.__class__.__name__] = evaluation
+            strategy_name = dismantler.selector.__class__.__name__ + " with " + dismantler.operator.__class__.__name__
+            results[strategy_name] = evaluation
 
         return results

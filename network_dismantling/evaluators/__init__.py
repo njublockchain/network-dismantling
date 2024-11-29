@@ -1,7 +1,7 @@
-from .avg_clustering import AvgClusteringMetric
-from .avg_path_length import AvgPathLengthMetric
-from .global_effiency import GlobalEfficiencyMetric
-from .evaluator import (
+from network_dismantling.evaluators.avg_clustering import AvgClusteringMetric
+from network_dismantling.evaluators.avg_path_length import AvgPathLengthMetric
+from network_dismantling.evaluators.global_effiency import GlobalEfficiencyMetric
+from network_dismantling.evaluators.evaluator import (
     EvaluationMetric,
     EvaluationStrategy,
     RelativeChangeStrategy,
